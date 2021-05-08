@@ -12,6 +12,18 @@ router.get(
 	}
 );
 
+router.get(
+	'/',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		User.find()
+			.then((users) => res.json(users))
+			.catch((err) =>
+				res.status(404).json({ success: false, msg: 'Error finding users' })
+			);
+	}
+);
+
 router.post('/login', function (req, res, next) {
 	User.findOne({ username: req.body.username })
 		.then((user) => {
