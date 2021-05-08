@@ -60,7 +60,7 @@ router.patch(
 		Task.findByIdAndUpdate(req.params.id, {
 			user_id: req.body.user_id,
 			description: req.body.description,
-			complete: req.body.complete,
+			status: req.body.status,
 		})
 			.then((task) =>
 				res
