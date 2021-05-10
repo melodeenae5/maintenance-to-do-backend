@@ -12,6 +12,7 @@ router.get(
 	}
 );
 
+//get all users
 router.get(
 	'/',
 	passport.authenticate('jwt', { session: false }),
