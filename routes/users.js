@@ -26,7 +26,7 @@ router.get(
 );
 
 router.post('/login', function (req, res, next) {
-	User.findOne({ email: req.body.email })
+	User.findOne({ username: req.body.username })
 		.then((user) => {
 			if (!user) {
 				res.status(401).json({ success: false, msg: 'could not find user' });
@@ -46,7 +46,7 @@ router.post('/login', function (req, res, next) {
 					expiresIn: tokenObject.expires,
 					user: user,
 					user_id: user._id,
-					email: user.email,
+					username: user.username,
 				});
 			} else {
 				res
@@ -66,11 +66,12 @@ router.post('/register', function (req, res, next) {
 	const hash = saltHash.hash;
 
 	const newUser = new User({
-		email: req.body.email,
+		username: req.body.username,
 		hash: hash,
 		salt: salt,
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
+		email: req.body.email,
 		admin: req.body.admin,
 	});
 	try {
@@ -83,7 +84,7 @@ router.post('/register', function (req, res, next) {
 				token: jwt.token,
 				expiresIn: jwt.expires,
 				user_id: user._id,
-				email: user.email,
+				username: user.username,
 			});
 		});
 	} catch (err) {
