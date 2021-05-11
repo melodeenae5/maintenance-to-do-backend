@@ -50,10 +50,10 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
-		User.findById(req.body.user_id).then((user) => {
+		User.find({ username: req.body.username }).then((user) => {
 			Task.create({
-				user_id: req.body.user_id,
-				username: user.username,
+				user_id: user.user_id,
+				username: req.body.username,
 				description: req.body.description,
 				complete: req.body.complete,
 				date: req.body.date,
