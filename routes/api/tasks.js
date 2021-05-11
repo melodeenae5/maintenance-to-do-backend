@@ -19,6 +19,18 @@ router.get(
 			);
 	}
 );
+//get all tasks
+router.get(
+	'/all',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		Task.find({})
+			.then((tasks) => res.json(tasks))
+			.catch((err) =>
+				res.status(404).json({ success: false, msg: 'Error finding tasks' })
+			);
+	}
+);
 
 //get task by id
 router.get(
@@ -38,17 +50,23 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
-		Task.create({
-			user_id: req.body.user_id,
-			description: req.body.description,
-			complete: req.body.complete,
-		})
-			.then((task) =>
-				res.status(201).json({ success: true, msg: 'Task added successfully' })
-			)
-			.catch((err) =>
-				res.status(400).json({ success: false, msg: 'Unable to add task' })
-			);
+		User.findById(req.body.user_id).then((user) => {
+			Task.create({
+				user_id: req.body.user_id,
+				username: user.username,
+				description: req.body.description,
+				complete: req.body.complete,
+				date: req.body.date,
+			})
+				.then((task) =>
+					res
+						.status(201)
+						.json({ success: true, msg: 'Task added successfully' })
+				)
+				.catch((err) =>
+					res.status(400).json({ success: false, msg: 'Unable to add task' })
+				);
+		});
 	}
 );
 
@@ -59,8 +77,10 @@ router.patch(
 	(req, res) => {
 		Task.findByIdAndUpdate(req.params.id, {
 			user_id: req.body.user_id,
+			username: req.body.username,
 			description: req.body.description,
-			status: req.body.status,
+			complete: req.body.complete,
+			date: req.body.date,
 		})
 			.then((task) =>
 				res
